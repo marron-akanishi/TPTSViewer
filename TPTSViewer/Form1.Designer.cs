@@ -27,6 +27,11 @@
             this.FileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenFolderMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.JumpTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.JumpMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.GotoStartMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.GotoEndMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -48,10 +53,15 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileMenu});
+            this.FileMenu,
+            this.OpenFolderMenu,
+            this.JumpTextBox,
+            this.JumpMenu,
+            this.GotoStartMenu,
+            this.GotoEndMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(784, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(784, 27);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -61,7 +71,7 @@
             this.OpenMenu,
             this.ExitMenu});
             this.FileMenu.Name = "FileMenu";
-            this.FileMenu.Size = new System.Drawing.Size(66, 20);
+            this.FileMenu.Size = new System.Drawing.Size(66, 23);
             this.FileMenu.Text = "ファイル(&F)";
             // 
             // OpenMenu
@@ -77,6 +87,46 @@
             this.ExitMenu.Size = new System.Drawing.Size(113, 22);
             this.ExitMenu.Text = "終了(&X)";
             this.ExitMenu.Click += new System.EventHandler(this.ExitMenu_Click);
+            // 
+            // OpenFolderMenu
+            // 
+            this.OpenFolderMenu.Enabled = false;
+            this.OpenFolderMenu.Name = "OpenFolderMenu";
+            this.OpenFolderMenu.Size = new System.Drawing.Size(89, 23);
+            this.OpenFolderMenu.Text = "フォルダーを開く";
+            this.OpenFolderMenu.Click += new System.EventHandler(this.OpenFolderMenu_Click);
+            // 
+            // JumpTextBox
+            // 
+            this.JumpTextBox.CausesValidation = false;
+            this.JumpTextBox.Enabled = false;
+            this.JumpTextBox.MaxLength = 5;
+            this.JumpTextBox.Name = "JumpTextBox";
+            this.JumpTextBox.Size = new System.Drawing.Size(100, 23);
+            // 
+            // JumpMenu
+            // 
+            this.JumpMenu.Enabled = false;
+            this.JumpMenu.Name = "JumpMenu";
+            this.JumpMenu.Size = new System.Drawing.Size(55, 23);
+            this.JumpMenu.Text = "ジャンプ";
+            this.JumpMenu.Click += new System.EventHandler(this.JumpMenu_Click);
+            // 
+            // GotoStartMenu
+            // 
+            this.GotoStartMenu.Enabled = false;
+            this.GotoStartMenu.Name = "GotoStartMenu";
+            this.GotoStartMenu.Size = new System.Drawing.Size(35, 23);
+            this.GotoStartMenu.Text = "<<";
+            this.GotoStartMenu.Click += new System.EventHandler(this.GotoStartMenu_Click);
+            // 
+            // GotoEndMenu
+            // 
+            this.GotoEndMenu.Enabled = false;
+            this.GotoEndMenu.Name = "GotoEndMenu";
+            this.GotoEndMenu.Size = new System.Drawing.Size(35, 23);
+            this.GotoEndMenu.Text = ">>";
+            this.GotoEndMenu.Click += new System.EventHandler(this.GotoEndMenu_Click);
             // 
             // statusStrip1
             // 
@@ -103,12 +153,12 @@
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.pictureBox, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 27);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 515);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 512);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // tableLayoutPanel2
@@ -128,7 +178,7 @@
             this.tableLayoutPanel2.Controls.Add(this.HashTag, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.ID, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.Time, 2, 1);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 468);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 465);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 3;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -215,15 +265,17 @@
             this.pictureBox.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.pictureBox.Location = new System.Drawing.Point(3, 3);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(778, 459);
+            this.pictureBox.Size = new System.Drawing.Size(778, 456);
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
+            this.pictureBox.DoubleClick += new System.EventHandler(this.pictureBox_DoubleClick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
@@ -231,7 +283,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "Form1";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TPTS Viewer";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ClientSizeChanged += new System.EventHandler(this.Form1_ClientSizeChanged);
@@ -267,6 +318,11 @@
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.Label HashTag;
         private System.Windows.Forms.Label Time;
+        private System.Windows.Forms.ToolStripMenuItem OpenFolderMenu;
+        private System.Windows.Forms.ToolStripTextBox JumpTextBox;
+        private System.Windows.Forms.ToolStripMenuItem JumpMenu;
+        private System.Windows.Forms.ToolStripMenuItem GotoStartMenu;
+        private System.Windows.Forms.ToolStripMenuItem GotoEndMenu;
     }
 }
 

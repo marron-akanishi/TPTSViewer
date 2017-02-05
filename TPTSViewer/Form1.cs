@@ -15,25 +15,32 @@ namespace TPTSViewer {
             InitializeComponent();
         }
 
-        private void ExitMenu_Click(object sender, EventArgs e) {
-            Application.Exit();
-        }
-
         private void OpenMenu_Click(object sender, EventArgs e) {
-            if(database != null) database.Close();
             OpenFileDialog dbfile = new OpenFileDialog();
             dbfile.Filter = "SQLite3 DB|*.db";
             dbfile.Title = "データベースファイルを選択してください。";
             if (dbfile.ShowDialog() == DialogResult.OK) {
+                if (database != null) database.Close();
                 FilePath = Path.GetDirectoryName(dbfile.FileName);
                 database = new SQLiteConnection("Data Source=" + dbfile.FileName);
                 try {
                     database.Open();
                     StatusLabel.Text = "データベースをロードしました : " + dbfile.FileName;
+                    FileCount = 0;
+                    OpenFolderMenu.Enabled = true;
+                    JumpMenu.Enabled = true;
+                    JumpTextBox.Enabled = true;
+                    GotoEndMenu.Enabled = true;
+                    GotoStartMenu.Enabled = true;
                     Form_Maker();
                 }
                 catch {
                     StatusLabel.Text = "データベースをロードできませんでした : " + dbfile.FileName;
+                    OpenFolderMenu.Enabled = false;
+                    JumpMenu.Enabled = false;
+                    JumpTextBox.Enabled = false;
+                    GotoEndMenu.Enabled = false;
+                    GotoStartMenu.Enabled = false;
                     return;
                 }
                 SQLiteCommand cmd = database.CreateCommand();
@@ -45,19 +52,24 @@ namespace TPTSViewer {
             }
         }
 
+        private void ExitMenu_Click(object sender, EventArgs e) {
+            Application.Exit();
+        }
+
         private void Form_Maker() {
             string FileName;
             try {
                 string[] FileList = Directory.GetFiles(FilePath, FileCount.ToString("D5") + ".*");
+                JumpTextBox.Text = FileCount.ToString("D5");
                 FileName = Path.GetFileName(FileList[0]);
                 if (pictureBox.Image != null) pictureBox.Image.Dispose();
                 Image temp = Image.FromFile(FileList[0]);
                 if (temp.Width >= pictureBox.Width || temp.Height >= pictureBox.Height) pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
                 else pictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
+                StatusLabel.Text = temp.Width.ToString() + "x" + temp.Height.ToString();
                 temp.Dispose();
                 pictureBox.Image = Image.FromFile(FileList[0]);
                 this.Text = FileList[0] + " - TPTS Viewer";
-                StatusLabel.Text = (FileCount + 1).ToString() + "個目のファイルです。";
             }
             catch {
                 StatusLabel.Text = "ファイルが存在しません : " + FileCount.ToString("D5");
@@ -76,21 +88,19 @@ namespace TPTSViewer {
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e) {
-            if (e.KeyData == Keys.Left) {
+            if (e.KeyData == Keys.Left || e.KeyData == Keys.J) {
                 FileCount--;
                 if(FileCount < 0) {
-                    StatusLabel.Text = "これ以上前にファイルが存在しません";
-                    FileCount = 0;
-                    return;
+                    StatusLabel.Text = "最後のファイルに移動します";
+                    FileCount = MaxFileCount - 1;
                 }
                 Form_Maker();
             }
-            if (e.KeyData == Keys.Right) {
+            if (e.KeyData == Keys.Right || e.KeyData == Keys.K) {
                 FileCount++;
                 if (FileCount >= MaxFileCount) {
-                    StatusLabel.Text = "これ以上先にファイルが存在しません";
-                    FileCount = MaxFileCount - 1;
-                    return;
+                    StatusLabel.Text = "最初のファイルに移動します";
+                    FileCount = 0;
                 }
                 Form_Maker();
             }
@@ -108,6 +118,36 @@ namespace TPTSViewer {
 
         private void Form1_ClientSizeChanged(object sender, EventArgs e) {
             if(pictureBox.Image != null) Form_Maker();
+        }
+
+        private void pictureBox_DoubleClick(object sender, EventArgs e) {
+            if (pictureBox.Image != null) System.Diagnostics.Process.Start(this.Text.Split(' ')[0]);
+            return;
+        }
+
+        private void OpenFolderMenu_Click(object sender, EventArgs e) {
+            System.Diagnostics.Process.Start(FilePath);
+        }
+
+        private void JumpMenu_Click(object sender, EventArgs e) {
+            try {
+                FileCount = Convert.ToInt32(JumpTextBox.Text);
+                Form_Maker();
+            }
+            catch {
+                StatusLabel.Text = "無効なファイル名です : " + JumpTextBox.Text;
+                return;
+            }
+        }
+
+        private void GotoStartMenu_Click(object sender, EventArgs e) {
+            FileCount = 0;
+            Form_Maker();
+        }
+
+        private void GotoEndMenu_Click(object sender, EventArgs e) {
+            FileCount = MaxFileCount - 1;
+            Form_Maker();
         }
     }
 }
