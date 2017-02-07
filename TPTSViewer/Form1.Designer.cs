@@ -26,11 +26,16 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.FileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewOpenMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.OldOpenMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReLoadMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFolderMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.JumpTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.JumpMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.GotoStartMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.PrevMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.NextMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.GotoEndMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -58,6 +63,8 @@
             this.JumpTextBox,
             this.JumpMenu,
             this.GotoStartMenu,
+            this.PrevMenu,
+            this.NextMenu,
             this.GotoEndMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -69,6 +76,7 @@
             // 
             this.FileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenMenu,
+            this.ReLoadMenu,
             this.ExitMenu});
             this.FileMenu.Name = "FileMenu";
             this.FileMenu.Size = new System.Drawing.Size(66, 23);
@@ -76,15 +84,39 @@
             // 
             // OpenMenu
             // 
+            this.OpenMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewOpenMenu,
+            this.OldOpenMenu});
             this.OpenMenu.Name = "OpenMenu";
-            this.OpenMenu.Size = new System.Drawing.Size(113, 22);
+            this.OpenMenu.Size = new System.Drawing.Size(122, 22);
             this.OpenMenu.Text = "開く(&O)";
-            this.OpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
+            // 
+            // NewOpenMenu
+            // 
+            this.NewOpenMenu.Name = "NewOpenMenu";
+            this.NewOpenMenu.Size = new System.Drawing.Size(124, 22);
+            this.NewOpenMenu.Text = "新Version";
+            this.NewOpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
+            // 
+            // OldOpenMenu
+            // 
+            this.OldOpenMenu.Name = "OldOpenMenu";
+            this.OldOpenMenu.Size = new System.Drawing.Size(124, 22);
+            this.OldOpenMenu.Text = "旧Version";
+            this.OldOpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
+            // 
+            // ReLoadMenu
+            // 
+            this.ReLoadMenu.Enabled = false;
+            this.ReLoadMenu.Name = "ReLoadMenu";
+            this.ReLoadMenu.Size = new System.Drawing.Size(122, 22);
+            this.ReLoadMenu.Text = "リロード(&R)";
+            this.ReLoadMenu.Click += new System.EventHandler(this.ReLoadMenu_Click);
             // 
             // ExitMenu
             // 
             this.ExitMenu.Name = "ExitMenu";
-            this.ExitMenu.Size = new System.Drawing.Size(113, 22);
+            this.ExitMenu.Size = new System.Drawing.Size(122, 22);
             this.ExitMenu.Text = "終了(&X)";
             this.ExitMenu.Click += new System.EventHandler(this.ExitMenu_Click);
             // 
@@ -119,6 +151,20 @@
             this.GotoStartMenu.Size = new System.Drawing.Size(35, 23);
             this.GotoStartMenu.Text = "<<";
             this.GotoStartMenu.Click += new System.EventHandler(this.GotoStartMenu_Click);
+            // 
+            // PrevMenu
+            // 
+            this.PrevMenu.Name = "PrevMenu";
+            this.PrevMenu.Size = new System.Drawing.Size(27, 23);
+            this.PrevMenu.Text = "<";
+            this.PrevMenu.Click += new System.EventHandler(this.PrevMenu_Click);
+            // 
+            // NextMenu
+            // 
+            this.NextMenu.Name = "NextMenu";
+            this.NextMenu.Size = new System.Drawing.Size(27, 23);
+            this.NextMenu.Text = ">";
+            this.NextMenu.Click += new System.EventHandler(this.NextMenu_Click);
             // 
             // GotoEndMenu
             // 
@@ -323,6 +369,11 @@
         private System.Windows.Forms.ToolStripMenuItem JumpMenu;
         private System.Windows.Forms.ToolStripMenuItem GotoStartMenu;
         private System.Windows.Forms.ToolStripMenuItem GotoEndMenu;
+        private System.Windows.Forms.ToolStripMenuItem PrevMenu;
+        private System.Windows.Forms.ToolStripMenuItem NextMenu;
+        private System.Windows.Forms.ToolStripMenuItem ReLoadMenu;
+        private System.Windows.Forms.ToolStripMenuItem NewOpenMenu;
+        private System.Windows.Forms.ToolStripMenuItem OldOpenMenu;
     }
 }
 

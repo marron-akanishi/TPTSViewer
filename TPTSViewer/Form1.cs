@@ -7,6 +7,8 @@ using System.Windows.Forms;
 namespace TPTSViewer {
     public partial class Form1 : Form {
         String FilePath = "";
+        String OpenDBFile = "";
+        bool is_NewDB = false;
         int FileCount = 0;
         int MaxFileCount = 0;
         SQLiteConnection database;
@@ -26,21 +28,16 @@ namespace TPTSViewer {
                 try {
                     database.Open();
                     StatusLabel.Text = "データベースをロードしました : " + dbfile.FileName;
+                    OpenDBFile = dbfile.FileName;
                     FileCount = 0;
-                    OpenFolderMenu.Enabled = true;
-                    JumpMenu.Enabled = true;
-                    JumpTextBox.Enabled = true;
-                    GotoEndMenu.Enabled = true;
-                    GotoStartMenu.Enabled = true;
+                    SetMenuMode(true);
+                    if (((ToolStripMenuItem)sender).Text == "旧Version") is_NewDB = false;
+                    else is_NewDB = true;
                     Form_Maker();
                 }
                 catch {
                     StatusLabel.Text = "データベースをロードできませんでした : " + dbfile.FileName;
-                    OpenFolderMenu.Enabled = false;
-                    JumpMenu.Enabled = false;
-                    JumpTextBox.Enabled = false;
-                    GotoEndMenu.Enabled = false;
-                    GotoStartMenu.Enabled = false;
+                    SetMenuMode(false);
                     return;
                 }
                 SQLiteCommand cmd = database.CreateCommand();
@@ -50,6 +47,15 @@ namespace TPTSViewer {
                     MaxFileCount = Convert.ToInt32(reader["count(filename)"].ToString());
                 }
             }
+        }
+
+        private void SetMenuMode(bool mode) {
+            ReLoadMenu.Enabled = mode;
+            OpenFolderMenu.Enabled = mode;
+            JumpMenu.Enabled = mode;
+            JumpTextBox.Enabled = mode;
+            GotoEndMenu.Enabled = mode;
+            GotoStartMenu.Enabled = mode;
         }
 
         private void ExitMenu_Click(object sender, EventArgs e) {
@@ -84,6 +90,8 @@ namespace TPTSViewer {
                 Fav_Count.Text = "Fav_Count : " + reader["fav"].ToString();
                 RT_Count.Text = "RT_Count : " + reader["retweet"].ToString();
                 HashTag.Text = "HashTag : " + reader["tags"].ToString();
+                if (is_NewDB) Time.Text = "Time : " + reader["time"].ToString();
+                else Time.Text = "Time";
             }
         }
 
@@ -148,6 +156,47 @@ namespace TPTSViewer {
         private void GotoEndMenu_Click(object sender, EventArgs e) {
             FileCount = MaxFileCount - 1;
             Form_Maker();
+        }
+
+        private void PrevMenu_Click(object sender, EventArgs e) {
+            FileCount--;
+            if (FileCount < 0) {
+                StatusLabel.Text = "最後のファイルに移動します";
+                FileCount = MaxFileCount - 1;
+            }
+            Form_Maker();
+        }
+
+        private void NextMenu_Click(object sender, EventArgs e) {
+            FileCount++;
+            if (FileCount >= MaxFileCount) {
+                StatusLabel.Text = "最初のファイルに移動します";
+                FileCount = 0;
+            }
+            Form_Maker();
+        }
+
+        private void ReLoadMenu_Click(object sender, EventArgs e) {
+            database.Close();
+            database = new SQLiteConnection("Data Source=" + OpenDBFile);
+            try {
+                database.Open();
+                StatusLabel.Text = "データベースをリロードしました";
+                FileCount = 0;
+                SetMenuMode(true);
+                Form_Maker();
+            }
+            catch {
+                StatusLabel.Text = "データベースをリロードできませんでした";
+                SetMenuMode(false);
+                return;
+            }
+            SQLiteCommand cmd = database.CreateCommand();
+            cmd.CommandText = "select count(filename) from list";
+            using (SQLiteDataReader reader = cmd.ExecuteReader()) {
+                reader.Read();
+                MaxFileCount = Convert.ToInt32(reader["count(filename)"].ToString());
+            }
         }
     }
 }
