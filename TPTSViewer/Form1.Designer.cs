@@ -48,6 +48,7 @@
             this.ID = new System.Windows.Forms.Label();
             this.Time = new System.Windows.Forms.Label();
             this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.SearchMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -65,7 +66,8 @@
             this.GotoStartMenu,
             this.PrevMenu,
             this.NextMenu,
-            this.GotoEndMenu});
+            this.GotoEndMenu,
+            this.SearchMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(784, 27);
@@ -154,6 +156,7 @@
             // 
             // PrevMenu
             // 
+            this.PrevMenu.Enabled = false;
             this.PrevMenu.Name = "PrevMenu";
             this.PrevMenu.Size = new System.Drawing.Size(27, 23);
             this.PrevMenu.Text = "<";
@@ -161,6 +164,7 @@
             // 
             // NextMenu
             // 
+            this.NextMenu.Enabled = false;
             this.NextMenu.Name = "NextMenu";
             this.NextMenu.Size = new System.Drawing.Size(27, 23);
             this.NextMenu.Text = ">";
@@ -272,6 +276,7 @@
             // HashTag
             // 
             this.HashTag.AutoSize = true;
+            this.HashTag.BackColor = System.Drawing.SystemColors.Control;
             this.tableLayoutPanel2.SetColumnSpan(this.HashTag, 3);
             this.HashTag.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HashTag.Location = new System.Drawing.Point(3, 28);
@@ -316,6 +321,14 @@
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
             this.pictureBox.DoubleClick += new System.EventHandler(this.pictureBox_DoubleClick);
+            // 
+            // SearchMenu
+            // 
+            this.SearchMenu.Enabled = false;
+            this.SearchMenu.Name = "SearchMenu";
+            this.SearchMenu.Size = new System.Drawing.Size(68, 23);
+            this.SearchMenu.Text = "ID検索(&S)";
+            this.SearchMenu.Click += new System.EventHandler(this.SearchMenu_Click);
             // 
             // Form1
             // 
@@ -365,7 +378,7 @@
         private System.Windows.Forms.Label HashTag;
         private System.Windows.Forms.Label Time;
         private System.Windows.Forms.ToolStripMenuItem OpenFolderMenu;
-        private System.Windows.Forms.ToolStripTextBox JumpTextBox;
+        public System.Windows.Forms.ToolStripTextBox JumpTextBox;
         private System.Windows.Forms.ToolStripMenuItem JumpMenu;
         private System.Windows.Forms.ToolStripMenuItem GotoStartMenu;
         private System.Windows.Forms.ToolStripMenuItem GotoEndMenu;
@@ -374,6 +387,7 @@
         private System.Windows.Forms.ToolStripMenuItem ReLoadMenu;
         private System.Windows.Forms.ToolStripMenuItem NewOpenMenu;
         private System.Windows.Forms.ToolStripMenuItem OldOpenMenu;
+        private System.Windows.Forms.ToolStripMenuItem SearchMenu;
     }
 }
 

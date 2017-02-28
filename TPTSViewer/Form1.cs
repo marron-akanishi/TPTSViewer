@@ -6,8 +6,8 @@ using System.Windows.Forms;
 
 namespace TPTSViewer {
     public partial class Form1 : Form {
+        public String OpenDBFile = "";
         String FilePath = "";
-        String OpenDBFile = "";
         bool is_NewDB = false;
         int FileCount = 0;
         int MaxFileCount = 0;
@@ -56,6 +56,9 @@ namespace TPTSViewer {
             JumpTextBox.Enabled = mode;
             GotoEndMenu.Enabled = mode;
             GotoStartMenu.Enabled = mode;
+            PrevMenu.Enabled = mode;
+            NextMenu.Enabled = mode;
+            SearchMenu.Enabled = mode;
         }
 
         private void ExitMenu_Click(object sender, EventArgs e) {
@@ -197,6 +200,11 @@ namespace TPTSViewer {
                 reader.Read();
                 MaxFileCount = Convert.ToInt32(reader["count(filename)"].ToString());
             }
+        }
+
+        private void SearchMenu_Click(object sender, EventArgs e) {
+            Form2 f = new Form2();
+            f.Show(this);
         }
     }
 }
