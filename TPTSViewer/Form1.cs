@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
@@ -12,9 +13,90 @@ namespace TPTSViewer {
         int FileCount = 0;
         int MaxFileCount = 0;
         SQLiteConnection database;
+        bool is_DispFrame = false;
+        Color FrameColor = Color.Lime;
 
         public Form1() {
             InitializeComponent();
+        }
+
+        private void Form_Maker() {
+            string FileName;
+            string[] FileList;
+            List<string> x = new List<string>();
+            List<string> y = new List<string>();
+            List<string> width = new List<string>();
+            List<string> height = new List<string>();
+            // ファイル検索
+            try {
+                FileList = Directory.GetFiles(FilePath, FileCount.ToString("D5") + ".*");
+                FileName = Path.GetFileName(FileList[0]);
+                // DB読み込み
+                SQLiteCommand cmd = database.CreateCommand();
+                cmd.CommandText = "select * from list where filename = '" + FileName + "'";
+                using (SQLiteDataReader reader = cmd.ExecuteReader()) {
+                    reader.Read();
+                    URL.Text = "URL : " + reader["url"].ToString();
+                    ID.Text = "ID : @" + reader["username"].ToString();
+                    Fav_Count.Text = "Fav_Count : " + reader["fav"].ToString();
+                    RT_Count.Text = "RT_Count : " + reader["retweet"].ToString();
+                    HashTag.Text = "HashTag : " + reader["tags"].ToString();
+                    if (is_NewDB) {
+                        Time.Text = "Time : " + reader["time"].ToString();
+                        x.AddRange(reader["facex"].ToString().TrimStart('[').TrimEnd(']').Split(','));
+                        y.AddRange(reader["facey"].ToString().TrimStart('[').TrimEnd(']').Split(','));
+                        width.AddRange(reader["facew"].ToString().TrimStart('[').TrimEnd(']').Split(','));
+                        height.AddRange(reader["faceh"].ToString().TrimStart('[').TrimEnd(']').Split(','));
+                    } else {
+                        Time.Text = "Time : " + reader["time"].ToString();
+                    }
+                }
+            }
+            catch {
+                StatusLabel.Text = "ファイルが存在しません : " + FileCount.ToString("D5");
+                return;
+            }
+            // 画像描画
+            Image temp = Image.FromFile(FileList[0]);
+            //サイズ取得
+            if (temp.Width >= pictureBox.Width || temp.Height >= pictureBox.Height) pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            else pictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
+            StatusLabel.Text = temp.Width.ToString() + "x" + temp.Height.ToString();
+            //枠描画
+            Bitmap canvas = new Bitmap(temp.Width, temp.Height);
+            Graphics g = Graphics.FromImage(canvas);
+            g.DrawImage(temp, 0, 0);
+            temp.Dispose(); //書いたらすぐ開放
+            if (is_DispFrame) {
+                Pen p = new Pen(FrameColor, 2);
+                for(int i = 0;i < height.Count; i++) {
+                    g.DrawRectangle(p, Convert.ToInt32(x[i]), Convert.ToInt32(y[i]), 
+                                        Convert.ToInt32(width[i]), Convert.ToInt32(height[i]));
+                }
+                p.Dispose(); //書いたらすぐ開放
+            }
+            g.Dispose(); //書いたらすぐ開放
+            if (pictureBox.Image != null) pictureBox.Image.Dispose();
+            pictureBox.Image = canvas;
+            JumpTextBox.Text = FileCount.ToString("D5");
+            this.Text = FileList[0] + " - TPTS Viewer";
+        }
+
+        private void SetMenuMode(bool mode) {
+            ReLoadMenu.Enabled = mode;
+            OpenFolderMenu.Enabled = mode;
+            JumpMenu.Enabled = mode;
+            JumpTextBox.Enabled = mode;
+            GotoEndMenu.Enabled = mode;
+            GotoStartMenu.Enabled = mode;
+            PrevMenu.Enabled = mode;
+            NextMenu.Enabled = mode;
+            SearchMenu.Enabled = mode;
+            FaceModeMenu.Enabled = mode;
+            if(mode == false) {
+                is_DispFrame = false;
+                FaceModeMenu.Text = "顔枠表示";
+            }
         }
 
         private void OpenMenu_Click(object sender, EventArgs e) {
@@ -49,53 +131,8 @@ namespace TPTSViewer {
             }
         }
 
-        private void SetMenuMode(bool mode) {
-            ReLoadMenu.Enabled = mode;
-            OpenFolderMenu.Enabled = mode;
-            JumpMenu.Enabled = mode;
-            JumpTextBox.Enabled = mode;
-            GotoEndMenu.Enabled = mode;
-            GotoStartMenu.Enabled = mode;
-            PrevMenu.Enabled = mode;
-            NextMenu.Enabled = mode;
-            SearchMenu.Enabled = mode;
-        }
-
         private void ExitMenu_Click(object sender, EventArgs e) {
             Application.Exit();
-        }
-
-        private void Form_Maker() {
-            string FileName;
-            try {
-                string[] FileList = Directory.GetFiles(FilePath, FileCount.ToString("D5") + ".*");
-                JumpTextBox.Text = FileCount.ToString("D5");
-                FileName = Path.GetFileName(FileList[0]);
-                if (pictureBox.Image != null) pictureBox.Image.Dispose();
-                Image temp = Image.FromFile(FileList[0]);
-                if (temp.Width >= pictureBox.Width || temp.Height >= pictureBox.Height) pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-                else pictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
-                StatusLabel.Text = temp.Width.ToString() + "x" + temp.Height.ToString();
-                temp.Dispose();
-                pictureBox.Image = Image.FromFile(FileList[0]);
-                this.Text = FileList[0] + " - TPTS Viewer";
-            }
-            catch {
-                StatusLabel.Text = "ファイルが存在しません : " + FileCount.ToString("D5");
-                return;
-            }
-            SQLiteCommand cmd = database.CreateCommand();
-            cmd.CommandText = "select * from list where filename = '" + FileName + "'";
-            using (SQLiteDataReader reader = cmd.ExecuteReader()) {
-                reader.Read();
-                URL.Text = "URL : " + reader["url"].ToString();
-                ID.Text = "ID : @" + reader["username"].ToString();
-                Fav_Count.Text = "Fav_Count : " + reader["fav"].ToString();
-                RT_Count.Text = "RT_Count : " + reader["retweet"].ToString();
-                HashTag.Text = "HashTag : " + reader["tags"].ToString();
-                if (is_NewDB) Time.Text = "Time : " + reader["time"].ToString();
-                else Time.Text = "Time";
-            }
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e) {
@@ -140,7 +177,7 @@ namespace TPTSViewer {
             System.Diagnostics.Process.Start(FilePath);
         }
 
-        private void JumpMenu_Click(object sender, EventArgs e) {
+        public void JumpMenu_Click(object sender, EventArgs e) {
             try {
                 FileCount = Convert.ToInt32(JumpTextBox.Text);
                 Form_Maker();
@@ -205,6 +242,27 @@ namespace TPTSViewer {
         private void SearchMenu_Click(object sender, EventArgs e) {
             Form2 f = new Form2();
             f.Show(this);
+        }
+
+        private void ColorSelMenu_Click(object sender, EventArgs e) {
+            ColorDialog cd = new ColorDialog();
+            cd.Color = FrameColor;
+            if(cd.ShowDialog() == DialogResult.OK) {
+                FrameColor = cd.Color;
+                if (is_DispFrame) Form_Maker();
+            }
+        }
+
+        private void FaceModeMenu_Click(object sender, EventArgs e) {
+            if (is_DispFrame) {
+                is_DispFrame = false;
+                FaceModeMenu.Text = "顔枠表示";
+                Form_Maker();
+            } else {
+                is_DispFrame = true;
+                FaceModeMenu.Text = "顔枠非表示";
+                Form_Maker();
+            }
         }
     }
 }

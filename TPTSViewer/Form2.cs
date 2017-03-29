@@ -31,6 +31,7 @@ namespace TPTSViewer {
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
             ((Form1)this.Owner).JumpTextBox.Text = listBox1.Text.Split('.')[0];
+            ((Form1)this.Owner).JumpMenu_Click(null, null);
         }
     }
 }
