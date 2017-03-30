@@ -26,8 +26,6 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.FileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.NewOpenMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.OldOpenMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ReLoadMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFolderMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,6 +37,7 @@
             this.GotoEndMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.FaceModeMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.ColorSelMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -50,7 +49,7 @@
             this.ID = new System.Windows.Forms.Label();
             this.Time = new System.Windows.Forms.Label();
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.ColorSelMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.SizeStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -90,39 +89,23 @@
             // 
             // OpenMenu
             // 
-            this.OpenMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.NewOpenMenu,
-            this.OldOpenMenu});
             this.OpenMenu.Name = "OpenMenu";
-            this.OpenMenu.Size = new System.Drawing.Size(122, 22);
+            this.OpenMenu.Size = new System.Drawing.Size(152, 22);
             this.OpenMenu.Text = "開く(&O)";
-            // 
-            // NewOpenMenu
-            // 
-            this.NewOpenMenu.Name = "NewOpenMenu";
-            this.NewOpenMenu.Size = new System.Drawing.Size(124, 22);
-            this.NewOpenMenu.Text = "新Version";
-            this.NewOpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
-            // 
-            // OldOpenMenu
-            // 
-            this.OldOpenMenu.Name = "OldOpenMenu";
-            this.OldOpenMenu.Size = new System.Drawing.Size(124, 22);
-            this.OldOpenMenu.Text = "旧Version";
-            this.OldOpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
+            this.OpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
             // 
             // ReLoadMenu
             // 
             this.ReLoadMenu.Enabled = false;
             this.ReLoadMenu.Name = "ReLoadMenu";
-            this.ReLoadMenu.Size = new System.Drawing.Size(122, 22);
+            this.ReLoadMenu.Size = new System.Drawing.Size(152, 22);
             this.ReLoadMenu.Text = "リロード(&R)";
             this.ReLoadMenu.Click += new System.EventHandler(this.ReLoadMenu_Click);
             // 
             // ExitMenu
             // 
             this.ExitMenu.Name = "ExitMenu";
-            this.ExitMenu.Size = new System.Drawing.Size(122, 22);
+            this.ExitMenu.Size = new System.Drawing.Size(152, 22);
             this.ExitMenu.Text = "終了(&X)";
             this.ExitMenu.Click += new System.EventHandler(this.ExitMenu_Click);
             // 
@@ -198,10 +181,19 @@
             this.FaceModeMenu.Text = "顔枠表示";
             this.FaceModeMenu.Click += new System.EventHandler(this.FaceModeMenu_Click);
             // 
+            // ColorSelMenu
+            // 
+            this.ColorSelMenu.BackColor = System.Drawing.SystemColors.Control;
+            this.ColorSelMenu.Name = "ColorSelMenu";
+            this.ColorSelMenu.Size = new System.Drawing.Size(67, 23);
+            this.ColorSelMenu.Text = "枠色設定";
+            this.ColorSelMenu.Click += new System.EventHandler(this.ColorSelMenu_Click);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.StatusLabel});
+            this.StatusLabel,
+            this.SizeStatusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 539);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(784, 22);
@@ -342,12 +334,13 @@
             this.pictureBox.TabStop = false;
             this.pictureBox.DoubleClick += new System.EventHandler(this.pictureBox_DoubleClick);
             // 
-            // ColorSelMenu
+            // SizeStatusLabel
             // 
-            this.ColorSelMenu.Name = "ColorSelMenu";
-            this.ColorSelMenu.Size = new System.Drawing.Size(67, 23);
-            this.ColorSelMenu.Text = "枠色設定";
-            this.ColorSelMenu.Click += new System.EventHandler(this.ColorSelMenu_Click);
+            this.SizeStatusLabel.Name = "SizeStatusLabel";
+            this.SizeStatusLabel.Size = new System.Drawing.Size(683, 17);
+            this.SizeStatusLabel.Spring = true;
+            this.SizeStatusLabel.Text = "0x0";
+            this.SizeStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Form1
             // 
@@ -404,11 +397,10 @@
         private System.Windows.Forms.ToolStripMenuItem PrevMenu;
         private System.Windows.Forms.ToolStripMenuItem NextMenu;
         private System.Windows.Forms.ToolStripMenuItem ReLoadMenu;
-        private System.Windows.Forms.ToolStripMenuItem NewOpenMenu;
-        private System.Windows.Forms.ToolStripMenuItem OldOpenMenu;
         private System.Windows.Forms.ToolStripMenuItem SearchMenu;
         private System.Windows.Forms.ToolStripMenuItem FaceModeMenu;
         private System.Windows.Forms.ToolStripMenuItem ColorSelMenu;
+        private System.Windows.Forms.ToolStripStatusLabel SizeStatusLabel;
     }
 }
 

@@ -9,7 +9,6 @@ namespace TPTSViewer {
     public partial class Form1 : Form {
         public String OpenDBFile = "";
         String FilePath = "";
-        bool is_NewDB = false;
         int FileCount = 0;
         int MaxFileCount = 0;
         SQLiteConnection database;
@@ -31,7 +30,13 @@ namespace TPTSViewer {
             try {
                 FileList = Directory.GetFiles(FilePath, FileCount.ToString("D5") + ".*");
                 FileName = Path.GetFileName(FileList[0]);
-                // DB読み込み
+            }
+            catch {
+                StatusLabel.Text = "ファイルが存在しません : " + FileCount.ToString("D5");
+                return;
+            }
+            // DB読み込み
+            try {
                 SQLiteCommand cmd = database.CreateCommand();
                 cmd.CommandText = "select * from list where filename = '" + FileName + "'";
                 using (SQLiteDataReader reader = cmd.ExecuteReader()) {
@@ -41,43 +46,40 @@ namespace TPTSViewer {
                     Fav_Count.Text = "Fav_Count : " + reader["fav"].ToString();
                     RT_Count.Text = "RT_Count : " + reader["retweet"].ToString();
                     HashTag.Text = "HashTag : " + reader["tags"].ToString();
-                    if (is_NewDB) {
-                        Time.Text = "Time : " + reader["time"].ToString();
-                        x.AddRange(reader["facex"].ToString().TrimStart('[').TrimEnd(']').Split(','));
-                        y.AddRange(reader["facey"].ToString().TrimStart('[').TrimEnd(']').Split(','));
-                        width.AddRange(reader["facew"].ToString().TrimStart('[').TrimEnd(']').Split(','));
-                        height.AddRange(reader["faceh"].ToString().TrimStart('[').TrimEnd(']').Split(','));
-                    } else {
-                        Time.Text = "Time : " + reader["time"].ToString();
-                    }
+                    Time.Text = "Time : " + reader["time"].ToString();
+                    x.AddRange(reader["facex"].ToString().TrimStart('[').TrimEnd(']').Split(','));
+                    y.AddRange(reader["facey"].ToString().TrimStart('[').TrimEnd(']').Split(','));
+                    width.AddRange(reader["facew"].ToString().TrimStart('[').TrimEnd(']').Split(','));
+                    height.AddRange(reader["faceh"].ToString().TrimStart('[').TrimEnd(']').Split(','));
                 }
             }
             catch {
-                StatusLabel.Text = "ファイルが存在しません : " + FileCount.ToString("D5");
-                return;
+                StatusLabel.Text = "DBが破損しているか旧バージョンです";
             }
             // 画像描画
             Image temp = Image.FromFile(FileList[0]);
             //サイズ取得
             if (temp.Width >= pictureBox.Width || temp.Height >= pictureBox.Height) pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             else pictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
-            StatusLabel.Text = temp.Width.ToString() + "x" + temp.Height.ToString();
+            SizeStatusLabel.Text = temp.Width.ToString() + "x" + temp.Height.ToString();
             //枠描画
-            Bitmap canvas = new Bitmap(temp.Width, temp.Height);
-            Graphics g = Graphics.FromImage(canvas);
-            g.DrawImage(temp, 0, 0);
-            temp.Dispose(); //書いたらすぐ開放
             if (is_DispFrame) {
+                Bitmap canvas = new Bitmap(temp.Width, temp.Height);
+                Graphics g = Graphics.FromImage(canvas);
+                g.DrawImage(temp, 0, 0, temp.Width, temp.Height);
+                temp.Dispose(); //書いたらすぐ開放
                 Pen p = new Pen(FrameColor, 2);
-                for(int i = 0;i < height.Count; i++) {
-                    g.DrawRectangle(p, Convert.ToInt32(x[i]), Convert.ToInt32(y[i]), 
+                for (int i = 0; i < height.Count; i++) {
+                    g.DrawRectangle(p, Convert.ToInt32(x[i]), Convert.ToInt32(y[i]),
                                         Convert.ToInt32(width[i]), Convert.ToInt32(height[i]));
                 }
                 p.Dispose(); //書いたらすぐ開放
+                g.Dispose(); //書いたらすぐ開放
+                if (pictureBox.Image != null) pictureBox.Image.Dispose();
+                pictureBox.Image = canvas;
+            } else {
+                pictureBox.Image = temp;
             }
-            g.Dispose(); //書いたらすぐ開放
-            if (pictureBox.Image != null) pictureBox.Image.Dispose();
-            pictureBox.Image = canvas;
             JumpTextBox.Text = FileCount.ToString("D5");
             this.Text = FileList[0] + " - TPTS Viewer";
         }
@@ -113,8 +115,6 @@ namespace TPTSViewer {
                     OpenDBFile = dbfile.FileName;
                     FileCount = 0;
                     SetMenuMode(true);
-                    if (((ToolStripMenuItem)sender).Text == "旧Version") is_NewDB = false;
-                    else is_NewDB = true;
                     Form_Maker();
                 }
                 catch {
@@ -138,6 +138,7 @@ namespace TPTSViewer {
         private void Form1_KeyUp(object sender, KeyEventArgs e) {
             if (e.KeyData == Keys.Left || e.KeyData == Keys.J) {
                 FileCount--;
+                StatusLabel.Text = "";
                 if(FileCount < 0) {
                     StatusLabel.Text = "最後のファイルに移動します";
                     FileCount = MaxFileCount - 1;
@@ -146,6 +147,7 @@ namespace TPTSViewer {
             }
             if (e.KeyData == Keys.Right || e.KeyData == Keys.K) {
                 FileCount++;
+                StatusLabel.Text = "";
                 if (FileCount >= MaxFileCount) {
                     StatusLabel.Text = "最初のファイルに移動します";
                     FileCount = 0;
@@ -200,6 +202,7 @@ namespace TPTSViewer {
 
         private void PrevMenu_Click(object sender, EventArgs e) {
             FileCount--;
+            StatusLabel.Text = "";
             if (FileCount < 0) {
                 StatusLabel.Text = "最後のファイルに移動します";
                 FileCount = MaxFileCount - 1;
@@ -209,6 +212,7 @@ namespace TPTSViewer {
 
         private void NextMenu_Click(object sender, EventArgs e) {
             FileCount++;
+            StatusLabel.Text = "";
             if (FileCount >= MaxFileCount) {
                 StatusLabel.Text = "最初のファイルに移動します";
                 FileCount = 0;
