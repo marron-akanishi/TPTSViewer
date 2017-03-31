@@ -226,7 +226,6 @@ namespace TPTSViewer {
             try {
                 database.Open();
                 StatusLabel.Text = "データベースをリロードしました";
-                FileCount = 0;
                 SetMenuMode(true);
                 Form_Maker();
             }
@@ -244,7 +243,7 @@ namespace TPTSViewer {
         }
 
         private void SearchMenu_Click(object sender, EventArgs e) {
-            Form2 f = new Form2();
+            Form2 f = new Form2(ID.Text.Remove(0,6));
             f.Show(this);
         }
 

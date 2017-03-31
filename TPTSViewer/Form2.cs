@@ -11,8 +11,9 @@ using System.Windows.Forms;
 
 namespace TPTSViewer {
     public partial class Form2 : Form {
-        public Form2() {
+        public Form2(string openedid) {
             InitializeComponent();
+            textBox1.Text = openedid;
         }
 
         private void button1_Click(object sender, EventArgs e) {
@@ -32,6 +33,14 @@ namespace TPTSViewer {
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
             ((Form1)this.Owner).JumpTextBox.Text = listBox1.Text.Split('.')[0];
             ((Form1)this.Owner).JumpMenu_Click(null, null);
+        }
+
+        private void Form2_Shown(object sender, EventArgs e) {
+            ((Form1)this.Owner).SearchMenu.Enabled = false;
+        }
+
+        private void Form2_FormClosed(object sender, FormClosedEventArgs e) {
+            ((Form1)this.Owner).SearchMenu.Enabled = true;
         }
     }
 }

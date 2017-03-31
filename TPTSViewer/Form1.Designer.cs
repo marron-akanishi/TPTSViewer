@@ -397,7 +397,7 @@
         private System.Windows.Forms.ToolStripMenuItem PrevMenu;
         private System.Windows.Forms.ToolStripMenuItem NextMenu;
         private System.Windows.Forms.ToolStripMenuItem ReLoadMenu;
-        private System.Windows.Forms.ToolStripMenuItem SearchMenu;
+        public System.Windows.Forms.ToolStripMenuItem SearchMenu;
         private System.Windows.Forms.ToolStripMenuItem FaceModeMenu;
         private System.Windows.Forms.ToolStripMenuItem ColorSelMenu;
         private System.Windows.Forms.ToolStripStatusLabel SizeStatusLabel;
