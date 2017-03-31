@@ -14,6 +14,8 @@ namespace TPTSViewer {
         SQLiteConnection database;
         bool is_DispFrame = false;
         Color FrameColor = Color.Lime;
+        Form3 infowindow = new Form3();
+        bool is_DispInfo = false;
 
         public Form1() {
             InitializeComponent();
@@ -56,6 +58,12 @@ namespace TPTSViewer {
             catch {
                 StatusLabel.Text = "DBが破損しているか旧バージョンです";
             }
+            // 枠情報を再構築
+            infowindow.listView1.Clear();
+            infowindow.listView1.Columns.Add("X");
+            infowindow.listView1.Columns.Add("Y");
+            infowindow.listView1.Columns.Add("Width");
+            infowindow.listView1.Columns.Add("Height");
             // 画像描画
             Image temp = Image.FromFile(FileList[0]);
             //サイズ取得
@@ -72,9 +80,13 @@ namespace TPTSViewer {
                 for (int i = 0; i < height.Count; i++) {
                     g.DrawRectangle(p, Convert.ToInt32(x[i]), Convert.ToInt32(y[i]),
                                         Convert.ToInt32(width[i]), Convert.ToInt32(height[i]));
+                    //枠情報追加
+                    string[] frameinfo = { x[i].Trim(' '), y[i].Trim(' '), width[i].Trim(' '), height[i].Trim(' ') };
+                    infowindow.listView1.Items.Add(new ListViewItem(frameinfo));
                 }
-                p.Dispose(); //書いたらすぐ開放
-                g.Dispose(); //書いたらすぐ開放
+                //書いたらすぐ開放
+                p.Dispose();
+                g.Dispose();
                 if (pictureBox.Image != null) pictureBox.Image.Dispose();
                 pictureBox.Image = canvas;
             } else {
@@ -94,10 +106,13 @@ namespace TPTSViewer {
             PrevMenu.Enabled = mode;
             NextMenu.Enabled = mode;
             SearchMenu.Enabled = mode;
-            FaceModeMenu.Enabled = mode;
+            FaceMenu.Enabled = mode;
             if(mode == false) {
                 is_DispFrame = false;
                 FaceModeMenu.Text = "顔枠表示";
+                if (is_DispInfo) infowindow.Hide();
+                is_DispInfo = false;
+                FaceInfoMenu.Text = "情報表示";
             }
         }
 
@@ -265,6 +280,29 @@ namespace TPTSViewer {
                 is_DispFrame = true;
                 FaceModeMenu.Text = "顔枠非表示";
                 Form_Maker();
+            }
+        }
+
+        private void FaceInfoMenu_Click(object sender, EventArgs e) {
+            if (is_DispInfo) {
+                is_DispInfo = false;
+                FaceInfoMenu.Text = "情報表示";
+                infowindow.Hide();
+            } else {
+                is_DispInfo = true;
+                FaceInfoMenu.Text = "情報非表示";
+                infowindow.Show(this);
+            }
+        }
+
+        private void Form1_Activated(object sender, EventArgs e) {
+            SendKeys.Send("{ESC}");
+        }
+
+        private void JumpTextBox_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == (char)Keys.Enter) {
+                e.Handled = true;
+                JumpMenu_Click(null, null);
             }
         }
     }
