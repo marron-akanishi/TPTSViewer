@@ -76,7 +76,14 @@ namespace TPTSViewer {
                 Graphics g = Graphics.FromImage(canvas);
                 g.DrawImage(temp, 0, 0, temp.Width, temp.Height);
                 temp.Dispose(); //書いたらすぐ開放
-                Pen p = new Pen(FrameColor, 2);
+                //枠の太さの拡大率取得
+                float ratio_w = 1.0F, ratio_h = 1.0F;
+                if (canvas.Width > pictureBox.Width) ratio_w = (float)canvas.Width / pictureBox.Width;
+                if (canvas.Height > pictureBox.Height) ratio_h = (float)canvas.Height / pictureBox.Height;
+                float ratio = 1.0F;
+                if (ratio_w > ratio_h) ratio = ratio_w;
+                else ratio = ratio_h;
+                Pen p = new Pen(FrameColor, 2 * ratio);
                 //枠描画
                 for (int i = 0; i < height.Count; i++) {
                     g.DrawRectangle(p, Convert.ToInt32(x[i]), Convert.ToInt32(y[i]),
@@ -119,7 +126,7 @@ namespace TPTSViewer {
 
         private void OpenMenu_Click(object sender, EventArgs e) {
             OpenFileDialog dbfile = new OpenFileDialog();
-            dbfile.Filter = "SQLite3 DB|*.db";
+            dbfile.Filter = "SQLite DB|*.db";
             dbfile.Title = "データベースファイルを選択してください。";
             if (dbfile.ShowDialog() == DialogResult.OK) {
                 if (database != null) database.Close();
