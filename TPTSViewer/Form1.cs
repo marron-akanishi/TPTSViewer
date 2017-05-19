@@ -70,13 +70,14 @@ namespace TPTSViewer {
             if (temp.Width >= pictureBox.Width || temp.Height >= pictureBox.Height) pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             else pictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
             SizeStatusLabel.Text = temp.Width.ToString() + "x" + temp.Height.ToString();
-            //枠描画
+            //顔枠
             if (is_DispFrame) {
                 Bitmap canvas = new Bitmap(temp.Width, temp.Height);
                 Graphics g = Graphics.FromImage(canvas);
                 g.DrawImage(temp, 0, 0, temp.Width, temp.Height);
                 temp.Dispose(); //書いたらすぐ開放
                 Pen p = new Pen(FrameColor, 2);
+                //枠描画
                 for (int i = 0; i < height.Count; i++) {
                     g.DrawRectangle(p, Convert.ToInt32(x[i]), Convert.ToInt32(y[i]),
                                         Convert.ToInt32(width[i]), Convert.ToInt32(height[i]));

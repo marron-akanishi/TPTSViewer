@@ -11,9 +11,18 @@ using System.Windows.Forms;
 
 namespace TPTSViewer {
     public partial class Form2 : Form {
+        Dictionary<string, string> column = new Dictionary<string, string>() {
+            {"ユーザーID","username" },
+            {"ハッシュタグ","tags" }
+        };
+
         public Form2(string openedid) {
             InitializeComponent();
             textBox1.Text = openedid;
+            comboBox1.DataSource = new BindingSource(column, null);
+            comboBox1.DisplayMember = "Key";
+            comboBox1.ValueMember = "Value";
+            comboBox1.SelectedIndex = 0;
         }
 
         private void button1_Click(object sender, EventArgs e) {
@@ -21,7 +30,8 @@ namespace TPTSViewer {
             SQLiteConnection database = new SQLiteConnection("Data Source=" + ((Form1)this.Owner).OpenDBFile);
             database.Open();
             SQLiteCommand cmd = database.CreateCommand();
-            cmd.CommandText = "select filename from list where username = '" + textBox1.Text + "'";
+            cmd.CommandText = string.Format("select filename from list where {0} like '%{1}%'",
+                comboBox1.SelectedValue,textBox1.Text);
             using (SQLiteDataReader reader = cmd.ExecuteReader()) {
                 while (reader.Read()) {
                     string data = (string)reader[0];
