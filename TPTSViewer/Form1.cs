@@ -58,6 +58,15 @@ namespace TPTSViewer {
             catch {
                 StatusLabel.Text = "DBが破損しているか旧バージョンです";
             }
+            //ハッシュタグ一覧メニュー生成
+            HashTagMenu.Items.Clear();
+            foreach(string tag in HashTag.Text.Remove(0, 10).TrimStart('[').TrimEnd(']').Split(',')) {
+                if (tag == "") continue;
+                ToolStripMenuItem tsi = new ToolStripMenuItem();
+                tsi.Text = tag.Trim(' ');
+                tsi.Click += HashTagMenu_Select;
+                HashTagMenu.Items.Add(tsi);
+            }
             // 枠情報を再構築
             infowindow.listView1.Clear();
             infowindow.listView1.Columns.Add("X");
@@ -184,11 +193,6 @@ namespace TPTSViewer {
             return;
         }
 
-        private void ID_DoubleClick(object sender, EventArgs e) {
-            if(ID.Text != "ID") System.Diagnostics.Process.Start("https://twitter.com/" + ID.Text.Remove(0, 6));
-            return;
-        }
-
         private void Form1_ClientSizeChanged(object sender, EventArgs e) {
             if(pictureBox.Image != null) Form_Maker();
         }
@@ -312,6 +316,12 @@ namespace TPTSViewer {
                 e.Handled = true;
                 JumpMenu_Click(null, null);
             }
+        }
+
+        private void HashTagMenu_Select(object sender, EventArgs e) {
+            var item = (ToolStripMenuItem)sender;
+            Form2 f = new Form2(item.Text,1);
+            f.Show(this);
         }
     }
 }

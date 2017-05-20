@@ -16,13 +16,14 @@ namespace TPTSViewer {
             {"ハッシュタグ","tags" }
         };
 
-        public Form2(string openedid) {
+        // mode->0:id 1:tag
+        public Form2(string data,int mode=0) {
             InitializeComponent();
-            textBox1.Text = openedid;
+            textBox1.Text = data;
             comboBox1.DataSource = new BindingSource(column, null);
             comboBox1.DisplayMember = "Key";
             comboBox1.ValueMember = "Value";
-            comboBox1.SelectedIndex = 0;
+            comboBox1.SelectedIndex = mode;
         }
 
         private void button1_Click(object sender, EventArgs e) {
