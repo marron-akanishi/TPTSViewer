@@ -24,6 +24,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.FileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,10 +51,10 @@
             this.Fav_Count = new System.Windows.Forms.Label();
             this.RT_Count = new System.Windows.Forms.Label();
             this.HashTag = new System.Windows.Forms.Label();
+            this.HashTagMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ID = new System.Windows.Forms.Label();
             this.Time = new System.Windows.Forms.Label();
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.HashTagMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -329,6 +330,11 @@
             this.HashTag.Text = "HashTag";
             this.HashTag.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // HashTagMenu
+            // 
+            this.HashTagMenu.Name = "HashTagMenu";
+            this.HashTagMenu.Size = new System.Drawing.Size(61, 4);
+            // 
             // ID
             // 
             this.ID.AutoSize = true;
@@ -364,11 +370,6 @@
             this.pictureBox.TabStop = false;
             this.pictureBox.DoubleClick += new System.EventHandler(this.pictureBox_DoubleClick);
             // 
-            // HashTagMenu
-            // 
-            this.HashTagMenu.Name = "HashTagMenu";
-            this.HashTagMenu.Size = new System.Drawing.Size(61, 4);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -378,6 +379,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(799, 596);
             this.Name = "Form1";

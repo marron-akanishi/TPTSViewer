@@ -39,6 +39,7 @@ namespace TPTSViewer {
                     listBox1.Items.Add(data);
                 }
             }
+            this.Text = "検索結果：" + listBox1.Items.Count.ToString();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
