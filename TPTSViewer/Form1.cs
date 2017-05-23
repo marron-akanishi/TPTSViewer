@@ -139,6 +139,7 @@ namespace TPTSViewer {
             dbfile.Title = "データベースファイルを選択してください。";
             if (dbfile.ShowDialog() == DialogResult.OK) {
                 if (database != null) database.Close();
+                if (dbfile.FileName.StartsWith("\\")) dbfile.FileName = "\\" + dbfile.FileName;
                 FilePath = Path.GetDirectoryName(dbfile.FileName);
                 database = new SQLiteConnection("Data Source=" + dbfile.FileName);
                 try {
