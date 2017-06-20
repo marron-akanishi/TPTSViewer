@@ -31,7 +31,7 @@ namespace TPTSViewer {
             // ファイル検索
             try {
                 FileList = Directory.GetFiles(FilePath, FileCount.ToString("D5") + ".*");
-                FileName = Path.GetFileName(FileList[0]);
+                FileName = FileCount.ToString("D5");
             }
             catch {
                 StatusLabel.Text = "ファイルが存在しません : " + FileCount.ToString("D5");
@@ -40,7 +40,7 @@ namespace TPTSViewer {
             // DB読み込み
             try {
                 SQLiteCommand cmd = database.CreateCommand();
-                cmd.CommandText = "select * from list where filename = '" + FileName + "'";
+                cmd.CommandText = "select * from list where filename like '" + FileCount.ToString("D5") + "%'";
                 using (SQLiteDataReader reader = cmd.ExecuteReader()) {
                     reader.Read();
                     URL.Text = "URL : " + reader["url"].ToString();
@@ -139,7 +139,7 @@ namespace TPTSViewer {
             dbfile.Title = "データベースファイルを選択してください。";
             if (dbfile.ShowDialog() == DialogResult.OK) {
                 if (database != null) database.Close();
-                if (dbfile.FileName.StartsWith("\\")) dbfile.FileName = "\\" + dbfile.FileName;
+                if (dbfile.FileName.StartsWith("\\")) dbfile.FileName = "\\\\" + dbfile.FileName;
                 FilePath = Path.GetDirectoryName(dbfile.FileName);
                 database = new SQLiteConnection("Data Source=" + dbfile.FileName);
                 try {
